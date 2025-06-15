@@ -13,7 +13,7 @@ FILE_NAME = "/home/vidhu/Documents/workout-import-refactor/jn.xlsx"
 logging.info(f"File name: {FILE_NAME}")
 duration = llm_service.make_llm_call(WORKOUT_DURATION_PROMPT, FILE_NAME, is_duration_call=True)
 logging.info(f"Workout duration: {duration} weeks")
-
+# TODO rep ranges like 3-4 are being interpreted as 04/03/2022 by excel, need to handle this
 with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
     start_times = {}
     future_to_week = {}

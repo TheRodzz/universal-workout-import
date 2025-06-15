@@ -1,9 +1,9 @@
 import os
-import time
+# import time
 import pandas as pd
 from dotenv import load_dotenv
 import logging
-import traceback
+# import traceback
 import pdfplumber
 
 from app.schema.workout_schema import WorkoutProgram
@@ -24,7 +24,7 @@ class LLMService:
                 - Exercise Name: If the exercise name has any superset related information, like A1, B2 etc, do not include it in the exercise name, but mention it in the notes.
                 - Sets: A list of objects where each object includes:
                 - Set Number: Number representing the sequence of the set (e.g., 1, 2, 3, etc.)
-                - Reps: Object with 'isRange', 'value', 'min', and 'max' (use empty values if not mentioned). If the reps are non-numeric (e.g., MR, MR10, or hyphen separated like 12-15), convert them to numeric values (e.g., MR = 10, MR10 = 10, 12-15 = min: 12 max:15) and mention the original format in the notes.
+                - Reps: Object with 'isRange', 'value', 'min', and 'max' (use empty values if not mentioned). If the reps are non-numeric (e.g., MR, MR10, or hyphen separated like 12-15), convert them to numeric values (e.g., MR = 10, MR10 = 10, 12-15 = min: 12 max:15) and mention the original format in the notes. Rep ranges may have been converted to dates by excel (for eg, 3-4 may be interpretted by excel as 04/03/YYYY). Ensure you correct this to a range, (dd/mm/yyyy maps to a range of min(dd,mm), max(dd,mm)).
                 - Weight: Object with 'value' and 'unit' (use empty values if not mentioned; if a range is provided, use the lower limit as 'value' and note the range in 'Notes')
                 - Rest Time: Object with 'value' and 'unit' (use empty values if not mentioned)
                 - Notes: Include warmups or additional notes; if a weight range exists, mention it here. If the program specifies the total number of sets in text (e.g., *3 sets*), create individual entries for each set. If reps are converted from non-numeric values, mention the original format here. Leave blank if not mentioned. Do not count the weeks by the number of days, follow the number of weeks in the program. Do not ignore any workouts, if a workout is repeated, include it in the output.
@@ -80,7 +80,7 @@ class LLMService:
             )
             
             if response.candidates and response.candidates[0].finish_reason.name == "MAX_TOKENS":
-                token_count = response.usage_metadata.total_token_count
+                _ = response.usage_metadata.total_token_count
             return response.text
         except Exception as e:
             logging.error(f"Error making LLM call: {e}")
