@@ -143,7 +143,7 @@ class ExerciseMatcher:
                     exercise_note = f"(Orignal Name: {exercise['Exercise Name']}). Notes: {exercise['Notes']}" if exercise.get("Notes") else f"Orignal Name: {exercise['Exercise Name']}"
                     matched_exercises.append({
                         "exercise_id": direct_match["id"],
-                        "exercise_name": direct_match["name"],
+                        "excercise_name": direct_match["name"],
                         "exercise_image": direct_match.get("image_name", ""),
                         "exercise_type": direct_match["exercise_type"],
                         "exercise_uuid": str(uuid4()),

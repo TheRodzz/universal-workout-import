@@ -46,8 +46,6 @@ class WorkoutProgramMapper:
                 for week in data["weeks"]:
                     for day in week["days"]:
                         
-                        logging.critical(f"week: {week['week']}")
-                        # for day_name, exercises in day.items():
                         if day["exercises"] == "":
                             continue
                         futures.append(

@@ -4,25 +4,31 @@ import logging
 import concurrent.futures
 import time
 import os
-import shutil
 from dotenv import load_dotenv
+import argparse
 from app.services.workout_program_parser import WorkoutProgramParser
 
 load_dotenv()
-logging.basicConfig(level=logging.CRITICAL, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 llm_service = LLMService()
+parser = argparse.ArgumentParser()
+parser.add_argument("--excel-file", required=True, help="Path to input excel file")
+parser.add_argument("--lyfta-cookie", required=True, help="Cookie for your lyfta account")
 
-FILE_NAME = "/home/vidhu/Documents/.projects/universal-workout-import/jn.xlsx"
+args = parser.parse_args()
+# FILE_NAME = "/home/vidhu/Documents/.projects/universal-workout-import/jn.xlsx"
+FILE_NAME = args.excel_file
+
 
 logging.info(f"File name: {FILE_NAME}")
+duration=12
 # duration = llm_service.make_llm_call(WORKOUT_DURATION_PROMPT, FILE_NAME, is_duration_call=True)
 # logging.info(f"Workout duration: {duration} weeks")
 
 # with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
 #     start_times = {}
 #     future_to_week = {}
-#     duration=1
 #     for i in range(1, int(duration) + 1):
 #         prompt = llm_service.generate_week_prompt(i)
 #         future = executor.submit(llm_service.make_llm_call, prompt, FILE_NAME)
@@ -45,4 +51,4 @@ logging.info(f"File name: {FILE_NAME}")
             
 workout_parser = WorkoutProgramParser(FILE_NAME, ".")
 # workout_parser.excel_to_single_minimal_csv()
-workout_parser.parallel_process(1, os.getenv("LYFTA_COOKIE"))
+workout_parser.parallel_process(duration, args.lyfta_cookie)

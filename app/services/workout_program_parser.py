@@ -148,7 +148,7 @@ class WorkoutProgramParser:
                     "exercise_type": exercise['exercise_type'],  # Update as needed
                     "date_created": "2025-01-24 13:47:20",  # Update as needed
                     "exercise_image": exercise['exercise_image'],  # Add image URL if available
-                    "exercise_name": exercise['exercise_name'],
+                    "excercise_name": exercise['excercise_name'],
                     "sets": formatted_sets
                 })
             

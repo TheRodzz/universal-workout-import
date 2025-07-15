@@ -14,7 +14,7 @@ load_dotenv()
 class LLMService:
     def __init__(self):
         self.llm = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-    
+        self.model = os.getenv("GEMINI_MODEL")
     
     def generate_week_prompt(self, week_number: int) -> str:
         """Generate a prompt to extract the workout program for a specific week in JSON format."""
@@ -67,7 +67,7 @@ class LLMService:
                     workout_program = file.read()
                     
             contents = [prompt, workout_program]
-            model = os.getenv("GEMINI_MODEL")
+            model = self.model
             config = {
                 "response_mime_type": "application/json",
                 "response_schema": WorkoutProgram if not is_duration_call else int,
