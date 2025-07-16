@@ -1,7 +1,7 @@
 import os
 # import time
 import pandas as pd
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import logging
 # import traceback
 import pdfplumber
@@ -10,7 +10,7 @@ from app.schema.workout_schema import WorkoutProgram
 
 from google import genai
 
-load_dotenv()
+# load_dotenv()
 class LLMService:
     def __init__(self):
         self.llm = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -78,10 +78,12 @@ class LLMService:
                 contents=contents,
                 config=config,
             )
-            
+            logging.info(f"Used {response.usage_metadata.total_token_count} tokens")
+            print(f"Used {response.usage_metadata.total_token_count} tokens")
             if response.candidates and response.candidates[0].finish_reason.name == "MAX_TOKENS":
                 _ = response.usage_metadata.total_token_count
             return response.text
         except Exception as e:
             logging.error(f"Error making LLM call: {e}")
             return None
+        

@@ -54,7 +54,7 @@ class APIClient:
             self.logging.error(f"Unexpected error in send_request: {e}", exc_info=True)
             raise
 
-    def create_collection(self, collection_name: str, cookie: str) -> str:
+    def create_collection(self, collection_name: str, week_number:int, cookie: str) -> str:
         """Create a new collection and return its ID."""
         endpoint = "saveCollection"
         current_time = datetime.now().isoformat()
@@ -65,6 +65,7 @@ class APIClient:
                 "image": "",
                 "date_created": current_time,
                 "date_updated": current_time,
+                "sort_priority": week_number
             }
         }
         try:

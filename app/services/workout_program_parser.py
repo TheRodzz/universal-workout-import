@@ -1,7 +1,6 @@
 import logging
 import traceback
 import os
-import pandas as pd
 from typing import Any
 from app.services.lyfta_api_service import APIClient
 from app.services.exercise_matcher import ExerciseMatcher
@@ -9,7 +8,6 @@ from app.services.llm_service import LLMService
 from app.services.workout_program_mapper import WorkoutProgramMapper
 from app.constants import EXERCISE_DB_PATH
 from concurrent.futures import ThreadPoolExecutor
-import json
 class WorkoutProgramParser:
     def __init__(self, input_file_path, tmp_dir_path):
         self.excel_file_path = input_file_path
@@ -17,60 +15,10 @@ class WorkoutProgramParser:
         self.csv_file_path = os.path.join(tmp_dir_path,'output.csv')
         self.llm_service = LLMService()
 
-    def excel_to_single_minimal_csv(self) -> None:
-        """Convert all sheets from an Excel file into a single CSV file."""
-        try:
-            # Validate input file path
-            if not self.excel_file_path or not isinstance(self.excel_file_path, str):
-                raise ValueError("Invalid Excel file path")
-
-            # Read all sheets from the Excel file
-            all_sheets = pd.read_excel(self.excel_file_path, sheet_name=None)
-
-            # List to hold all DataFrames
-            all_dataframes = []
-
-            # Iterate over each sheet
-            for sheet_name, df in all_sheets.items():
-                # Strip whitespace from headers and data
-                df.columns = [str(col).strip() for col in df.columns]
-                df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-
-                # Drop any completely empty rows or columns
-                df.dropna(how='all', inplace=True)
-                df.dropna(axis=1, how='all', inplace=True)
-
-                # Add a column to identify the sheet name
-                df['SheetName'] = sheet_name
-
-                # Append the DataFrame to the list
-                all_dataframes.append(df)
-
-            # Concatenate all DataFrames into a single DataFrame
-            combined_df = pd.concat(all_dataframes, ignore_index=True)
-
-            # Save the combined DataFrame to a single CSV file
-            combined_df.to_csv(self.csv_file_path, index=False, sep=',', encoding='utf-8', compression='infer')
-
-            logging.info(f"All sheets combined and saved as {self.csv_file_path}")
-        except FileNotFoundError as e:
-            logging.error(f"Excel file not found: {e}")
-            logging.error(traceback.format_exc())
-            raise
-        except pd.errors.EmptyDataError as e:
-            logging.error(f"Excel file is empty: {e}")
-            logging.error(traceback.format_exc())
-            raise
-        except Exception as e:
-            logging.error(f"Error converting Excel to CSV: {e}")
-            logging.error(traceback.format_exc())
-            raise
-
     def process_week(self, week_number: int, cookie: str, exercise_matcher: Any) -> None:
         """Process a single week and save the output as a JSON file."""
         try:
-            #     api_client.create_workout_in_co
-            output_file_path = os.path.join(self.dir_path, f'result-jn-{week_number}.json')
+            output_file_path = os.path.join(self.dir_path, f'result-{week_number}.json')
 
             # week_prompt = self.llm_service.generate_week_prompt(week_number)
             # response = self.llm_service.send_file_to_openai(self.csv_file_path, week_prompt)
@@ -82,15 +30,13 @@ class WorkoutProgramParser:
             api_client = APIClient()
             # Create a collection for the week
             collection_name = f"Week {week_number}"
-            collection_id, user_id = api_client.create_collection(collection_name, cookie)
+            collection_id, user_id = api_client.create_collection(collection_name, week_number, cookie)
 
             # Send workouts to the API, associating them with the created collection
 
             formatted_workouts = self.format_workout_data(structured_workouts)
             
             # Create the final payload
-            with open('out', 'w', encoding='utf-8') as f:
-                json.dump(structured_workouts, f, ensure_ascii=False, indent=2)
 
             for workout in formatted_workouts:
                 api_client.create_workout_in_collection(workout, collection_id, user_id, collection_name, cookie)
