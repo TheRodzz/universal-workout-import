@@ -70,4 +70,4 @@ You are free to use, modify, and distribute this code for **personal, educationa
 **Commercial use is prohibited without prior written consent.**  
 For commercial licensing inquiries, please contact: vidhuarora84@gmail.com
 
-See [LICENSE](LICENSE) for details.
+See [LICENSE](LICENSE.md) for details.

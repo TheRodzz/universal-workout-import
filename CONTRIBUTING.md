@@ -21,4 +21,4 @@ Thank you for your interest in contributing!
 ## Questions or Suggestions?
 Open an issue or start a discussion in the repository.
 
-We appreciate your help in making this project better! 
+I appreciate your help in making this project better! 
