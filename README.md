@@ -2,7 +2,7 @@
 
 A tool to parse workout programs from various file formats, structure them using Gemini API, and import them into the Lyfta workout tracker.
 
-For Docker setup instructions, see the [Docker Usage](#docker-usage) section below.
+For Docker setup instructions, see the [official docker setup guide](https://www.docker.com/get-started/).
 
 ## Architecture
 
